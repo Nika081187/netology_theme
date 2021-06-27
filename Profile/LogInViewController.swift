@@ -13,7 +13,7 @@ protocol LogInViewControllerDelegate: class {
 }
 
 @available(iOS 13.0, *)
-class LogInViewController: UIViewController {
+class LogInViewController: UIViewController, Themeable {
     private let basePadding: CGFloat = 16.0
     
     weak var delegate: LogInViewControllerDelegate?
@@ -181,6 +181,10 @@ class LogInViewController: UIViewController {
     @objc func logInButtonPressed() {
         print("Log in button pressed")
         delegate?.onLogInPressed()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        apply(theme: Theme(type: .dark, colors: .dark))
     }
 }
 
