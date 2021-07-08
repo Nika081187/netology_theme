@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PostTableViewCell: UITableViewCell {
+class PostTableViewCell: UITableViewCell, Themeable {
     let baseOffset: CGFloat =  16
     
     public func configure(post: Post){
@@ -22,7 +22,6 @@ class PostTableViewCell: UITableViewCell {
     private lazy var nameLabel: UILabel = {
         let nameLabel = UILabel()
         nameLabel.toAutoLayout()
-        nameLabel.textColor = .black
         nameLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
         nameLabel.numberOfLines = 2
         return nameLabel
@@ -32,14 +31,12 @@ class PostTableViewCell: UITableViewCell {
         let postImage = UIImageView()
         postImage.toAutoLayout()
         postImage.contentMode = .scaleAspectFit
-        postImage.backgroundColor = .black
         return postImage
     }()
     
     private lazy var descriptionLabel: UILabel = {
         let descriptionLabel = UILabel()
         descriptionLabel.toAutoLayout()
-        descriptionLabel.textColor = .gray
         descriptionLabel.font = descriptionLabel.font.withSize(14)
         descriptionLabel.numberOfLines = 0
         return descriptionLabel
@@ -48,7 +45,6 @@ class PostTableViewCell: UITableViewCell {
     private lazy var likesLabel: UILabel = {
         let likesLabel = UILabel()
         likesLabel.toAutoLayout()
-        likesLabel.textColor = .black
         likesLabel.font = descriptionLabel.font.withSize(16)
         return likesLabel
     }()
@@ -56,7 +52,6 @@ class PostTableViewCell: UITableViewCell {
     private lazy var viewsLabel: UILabel = {
         let viewsLabel = UILabel()
         viewsLabel.toAutoLayout()
-        viewsLabel.textColor = .black
         viewsLabel.font = descriptionLabel.font.withSize(16)
         return viewsLabel
     }()
@@ -64,6 +59,7 @@ class PostTableViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupLayout()
+        changeTheme(traitCollection.userInterfaceStyle)
     }
     
     required init?(coder: NSCoder) {
@@ -98,10 +94,36 @@ class PostTableViewCell: UITableViewCell {
             
             viewsLabel.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
             viewsLabel.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
-            viewsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -(baseOffset)),
-
-        ]
+            viewsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -(baseOffset))]
         
         NSLayoutConstraint.activate(constraint)
+    }
+    
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            nameLabel.textColor = .white
+            postImage.backgroundColor = .black
+            descriptionLabel.textColor = .white
+            likesLabel.textColor = .white
+            imageView?.backgroundColor = .black
+        } else {
+            nameLabel.textColor = .black
+            postImage.backgroundColor = .white
+            descriptionLabel.textColor = .black
+            likesLabel.textColor = .black
+            imageView?.backgroundColor = .white
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
     }
 }

@@ -13,7 +13,7 @@ protocol ProfileViewDelegate: class {
 }
 
 @available(iOS 13.0, *)
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController, Themeable {
     
     let screenRect = UIScreen.main.bounds
     lazy var screenWidth = screenRect.size.width
@@ -36,36 +36,6 @@ class ProfileViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print(type(of: self), #function)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print(type(of: self), #function)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print(type(of: self), #function)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        print(type(of: self), #function)
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        print(type(of: self), #function)
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        print(type(of: self), #function)
     }
     
     override func viewDidLoad() {
@@ -101,6 +71,31 @@ class ProfileViewController: UIViewController {
         let tapGestureRecognizer = UITapGestureRecognizer.init(target: self, action: #selector(tapAvatar))
         header.avatarImage.addGestureRecognizer(tapGestureRecognizer)
         header.avatarImage.isUserInteractionEnabled = true
+        
+        changeTheme(traitCollection.userInterfaceStyle)
+    }
+    
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            view.backgroundColor = .black
+            table.backgroundColor = .black
+        } else {
+            view.backgroundColor = .white
+            table.backgroundColor = .white
+        }
+        table.reloadData()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
     }
     
     @objc func tapAvatar() {

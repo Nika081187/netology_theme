@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotosCollectionViewCell: UICollectionViewCell {
+class PhotosCollectionViewCell: UICollectionViewCell, Themeable {
     private lazy var photoImage: UIImageView = {
         let photoImage = UIImageView()
         photoImage.toAutoLayout()
@@ -30,6 +30,28 @@ class PhotosCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            backgroundColor = .black
+            contentView.backgroundColor = .black
+        } else {
+            backgroundColor = .white
+            contentView.backgroundColor = .white
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
+    }
+    
     func setupLayout() {
         addSubview(contentView)
         contentView.addSubview(photoImage)
@@ -45,5 +67,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
             photoImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             photoImage.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
+        
+        changeTheme(traitCollection.userInterfaceStyle)
     }
 }

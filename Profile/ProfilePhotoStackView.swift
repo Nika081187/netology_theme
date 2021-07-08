@@ -13,7 +13,31 @@ protocol ProfilePhotoStackViewDelegate: class {
 }
 
 @available(iOS 13.0, *)
-class ProfilePhotoStackView: UIView {
+class ProfilePhotoStackView: UIView, Themeable {
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            backgroundColor = .black
+            photoStackView.backgroundColor = .black
+            photoLabel.textColor = .white
+        } else {
+            backgroundColor = .white
+            photoStackView.backgroundColor = .white
+            photoLabel.textColor = .black
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
+    }
+    
     let baseOffset: CGFloat =  12
     public var rootController: UIViewController?
     
@@ -22,7 +46,6 @@ class ProfilePhotoStackView: UIView {
     private lazy var photoLabel: UILabel = {
         let photoLabel = UILabel()
         photoLabel.toAutoLayout()
-        photoLabel.textColor = .black
         photoLabel.text = "Photos"
         photoLabel.font = UIFont.boldSystemFont(ofSize: 24.0)
         return photoLabel
@@ -31,7 +54,7 @@ class ProfilePhotoStackView: UIView {
     private lazy var arrowButton: UIButton = {
         let arrowButton = UIButton()
         arrowButton.toAutoLayout()
-        arrowButton.setImage(#imageLiteral(resourceName: "arrow2"), for: .normal)
+        arrowButton.setImage(UIImage(systemName: "arrow.right"), for: .normal)
         arrowButton.addTarget(self, action: #selector(arrowButtonPressed), for: .touchUpInside)
         return arrowButton
     }()
@@ -85,6 +108,8 @@ class ProfilePhotoStackView: UIView {
     }
     
     func setupLayout() {
+        changeTheme(traitCollection.userInterfaceStyle)
+
         NSLayoutConstraint.activate([
             photoLabel.topAnchor.constraint(equalTo: topAnchor, constant: baseOffset),
             photoLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -(baseOffset)),

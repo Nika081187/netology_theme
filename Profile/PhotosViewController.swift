@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PhotosViewController: UIViewController {
+class PhotosViewController: UIViewController, Themeable {
     
     let baseOffset: CGFloat = 8
     
@@ -16,7 +16,6 @@ class PhotosViewController: UIViewController {
     
     private lazy var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
         view.toAutoLayout()
         return view
     }()
@@ -27,10 +26,33 @@ class PhotosViewController: UIViewController {
         cv.register(PhotosCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: PhotosCollectionViewCell.self))
         cv.dataSource = self
         cv.delegate = self
-        cv.backgroundColor = .white
         cv.toAutoLayout()
         return cv
     }()
+    
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            view.backgroundColor = .black
+            contentView.backgroundColor = .black
+            photoCollectionView.backgroundColor = .black
+        } else {
+            view.backgroundColor = .white
+            contentView.backgroundColor = .white
+            photoCollectionView.backgroundColor = .white
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +61,8 @@ class PhotosViewController: UIViewController {
         setupLayout()
         self.navigationItem.title = "Photo Gallery"
         self.navigationController?.navigationBar.isHidden = false
+        
+        changeTheme(traitCollection.userInterfaceStyle)
     }
     
     func setupLayout() {

@@ -9,7 +9,7 @@
 import UIKit
 
 @available(iOS 13.0, *)
-class ProfileTableHederView: UIView {
+class ProfileTableHederView: UIView, Themeable {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -20,6 +20,27 @@ class ProfileTableHederView: UIView {
         cont.addSubview(nameLabel)
         cont.addSubview(avatarImage)
         setupLayout()
+        changeTheme(traitCollection.userInterfaceStyle)
+    }
+    
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            nameLabel.textColor = .white
+        } else {
+            nameLabel.textColor = .black
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -51,7 +72,6 @@ class ProfileTableHederView: UIView {
         let nameLabel = UILabel()
         nameLabel.toAutoLayout()
         nameLabel.text = "Hysterical Cat"
-        nameLabel.textColor = .black
         nameLabel.font = UIFont.boldSystemFont(ofSize: 18.0)
         return nameLabel
     }()
@@ -60,7 +80,7 @@ class ProfileTableHederView: UIView {
         let statusText = UITextField()
         statusText.toAutoLayout()
         statusText.font = UIFont.boldSystemFont(ofSize: 14.0)
-        statusText.textColor = .darkGray
+        statusText.textColor = .black
         statusText.placeholder = "Waiting for something..."
         statusText.isEnabled = true
         return statusText
@@ -89,7 +109,6 @@ class ProfileTableHederView: UIView {
     
     func setupLayout() {
         NSLayoutConstraint.activate([
-            
             cont.topAnchor.constraint(equalTo: topAnchor),
             cont.leadingAnchor.constraint(equalTo: leadingAnchor),
             cont.trailingAnchor.constraint(equalTo: trailingAnchor),

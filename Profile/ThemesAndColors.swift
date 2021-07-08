@@ -15,6 +15,7 @@ struct Theme {
     }
     let type: ThemeName
     let colors: ColorPalette
+    let labelColor = (light: UIColor.black, dark: UIColor.white)
 }
 
 enum ColorPalette {
@@ -28,16 +29,27 @@ extension Theme {
 }
 
 protocol Themeable: class {
-    func apply(theme: Theme)
+    func changeTheme(_ theme: UIUserInterfaceStyle)
 }
 
-extension UIColor {
-    static func createColor(lightMode: UIColor, darkMode: UIColor) -> UIColor {
-        guard #available(iOS 13.0, *) else {
-            return lightMode
-        }
-        return UIColor { (traitCollection) -> UIColor in
-            return traitCollection.userInterfaceStyle == .light ? lightMode : darkMode
-        }
+func systemLabelColor(collection: UITraitCollection) -> UIColor {
+    switch collection.userInterfaceStyle {
+    case .dark:
+        return UIColor.white
+    case .light:
+        return UIColor.black
+    default:
+        return UIColor.black
+    }
+}
+
+func systemViewColor(_ collection: UITraitCollection) -> UIColor {
+    switch collection.userInterfaceStyle {
+    case .dark:
+        return UIColor.black
+    case .light:
+        return UIColor.white
+    default:
+        return UIColor.white
     }
 }
