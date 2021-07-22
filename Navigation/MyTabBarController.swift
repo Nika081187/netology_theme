@@ -20,7 +20,7 @@ class MyTabBarController: UIViewController, UITabBarDelegate {
     private lazy var updateLabel: UILabel = {
         let label = UILabel()
         label.toAutoLayout()
-        label.textColor = .darkGray
+        label.textColor = .black
         return label
     }()
 
@@ -76,10 +76,6 @@ class MyTabBarController: UIViewController, UITabBarDelegate {
     }
     
     func updateUI() {
-      guard updateLabel != nil  else {
-        return
-      }
-      
       if let time = time {
         updateLabel.text = dateFormatter.string(from: time)
       } else {

@@ -13,13 +13,15 @@ protocol LogInViewControllerDelegate: class {
 }
 
 @available(iOS 13.0, *)
-class LogInViewController: UIViewController {
+class LogInViewController: UIViewController, Themeable {
+    
     private let basePadding: CGFloat = 16.0
     
     weak var delegate: LogInViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         title = "Profile"
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -35,7 +37,13 @@ class LogInViewController: UIViewController {
         contentView.addSubview(loginTextField)
         contentView.addSubview(passwordTextField)
         contentView.addSubview(logInButton)
+
+        setLayout()
         
+        changeTheme(traitCollection.userInterfaceStyle)
+    }
+    
+    func setLayout() {
         NSLayoutConstraint.activate([
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -181,6 +189,41 @@ class LogInViewController: UIViewController {
     @objc func logInButtonPressed() {
         print("Log in button pressed")
         delegate?.onLogInPressed()
+    }
+    
+    func changeTheme(_ theme: UIUserInterfaceStyle) {
+        if theme == .dark {
+            view.backgroundColor = .systemTeal
+            loginTextField.backgroundColor = .systemGray6
+            loginTextField.textColor = .white
+            loginTextField.attributedPlaceholder = NSAttributedString(string: "Email or phone",
+                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+            passwordTextField.backgroundColor = .systemGray6
+            passwordTextField.textColor = .white
+            passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password",
+                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
+        } else {
+            view.backgroundColor = .white
+            
+            loginTextField.backgroundColor = .systemGray6
+            loginTextField.attributedPlaceholder = NSAttributedString(string: "Email or phone",
+                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+            passwordTextField.backgroundColor = .systemGray6
+            passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password",
+                                                                      attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        switch traitCollection.userInterfaceStyle {
+        case .dark:
+            changeTheme(.dark)
+        case .light:
+            changeTheme(.light)
+        default:
+            changeTheme(.light)
+        }
     }
 }
 
